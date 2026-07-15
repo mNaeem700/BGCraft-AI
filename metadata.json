@@ -1,0 +1,6 @@
+{
+  "name": "BGCraft AI",
+  "description": "Free AI Background Remover & Photo Editor. Automatically remove backgrounds, replace backgrounds, edit photos, and export in multiple formats without watermark.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

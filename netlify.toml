@@ -1,0 +1,55 @@
+# Netlify Configuration File
+# This file configures the build settings, redirects, and headers for Netlify.
+
+[build]
+  # The command Netlify runs to build your application
+  command = "npm run build"
+  
+  # The directory containing the static assets to publish (Vite output folder)
+  publish = "dist"
+
+[functions]
+  # Directory where Netlify serverless functions are located
+  directory = "netlify/functions"
+  
+  # Use esbuild to bundle serverless functions for maximum performance
+  node_bundler = "esbuild"
+
+# REDIRECT RULES
+# 1. Route all frontend api calls to our Netlify serverless function
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+# 2. Support React Single Page Application (SPA) routing
+# Ensures that refreshing any client-side page loads the index.html file correctly
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# CUSTOM HTTP HEADERS
+# Highly recommended settings to optimize browser performance and enable WebAssembly acceleration.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # The following headers enable SharedArrayBuffer in the browser.
+    # This enables multi-threaded WebAssembly execution inside the browser,
+    # making your local AI background removal run up to 20x faster!
+    # NOTE: If you experience trouble loading certain external images, you can comment out
+    # these two policy headers or configure the <img> tag with crossOrigin="anonymous".
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Embedder-Policy = "require-corp"
+    
+    # Enable secure frames and anti-clickjacking
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer-when-downgrade"
+
+# Optimize caching for WebAssembly files and other static assets
+[[headers]]
+  for = "/*.wasm"
+  [headers.values]
+    Content-Type = "application/wasm"
+    Cache-Control = "public, max-age=31536000, immutable"
